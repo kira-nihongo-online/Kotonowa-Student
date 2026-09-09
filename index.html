@@ -170,43 +170,52 @@ button{
 
 <div style="position:absolute; top:43%; left:50%; transform:translateX(-50%); width:85%; max-width:700px; height:120px;">
 
-  <input
-    type="password"
-    inputmode="numeric"
-    maxlength="4"
-    style="width:100%; height:100%; box-sizing:border-box; text-align:center; font-size:72px; letter-spacing:50px; border:3px solid #2196f3; border-radius:18px; padding-right:70px; background:rgba(255,255,255,0.08); color:#ffffff;"
-    >
+ <div style="position:relative; width:100%; height:100%;">
 
-  <div onclick="toggleStudentNumber()" style="position:absolute; right:22px; top:50%; transform:translateY(-50%); width:64px; height:44px; cursor:pointer;">
-    <svg viewBox="0 0 64 40" width="64" height="44">
-      <path
-        d="M4 20
-           C12 7, 22 2, 32 2
-           C42 2, 52 7, 60 20
-           C52 33, 42 38, 32 38
-           C22 38, 12 33, 4 20 Z"
-        fill="none"
-        stroke="#ffffff"
-        stroke-width="4"
-        stroke-linejoin="round"
-      />
-      <circle
-        cx="32"
-        cy="20"
-        r="9"
-        fill="none"
-        stroke="#ffffff"
-        stroke-width="4"
-      />
-      <circle
-        cx="32"
-        cy="20"
-        r="4"
-        fill="#ffffff"
-      />
-  
-    </svg>
+   <input
+     id="studentNumberInput"
+     type="text"
+     inputmode="numeric"
+     maxlength="4"
+     style="width:100%; height:100%; box-sizing:border-box; text-align:center; font-size:72px; letter-spacing:20px; border:3px solid #2196f3; border-radius:18px; padding-right:70px; background:rgba(255,255,255,0.08); color:transparent;"
+   >
 
+   <div
+     id="studentNumberMask"
+     style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-right:70px; box-sizing:border-box; font-size:72px; letter-spacing:20px; color:#ffffff; pointer-events:none;"
+   ></div>
+
+   <div onclick="toggleStudentNumber()" style="position:absolute; right:22px; top:50%; transform:translateY(-50%); width:64px; height:44px; cursor:pointer;">
+     <svg viewBox="0 0 64 40" width="64" height="44">
+       <path
+         d="M4 20
+            C12 7, 22 2, 32 2
+            C42 2, 52 7, 60 20
+            C52 33, 42 38, 32 38
+            C22 38, 12 33, 4 20 Z"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="4"
+         stroke-linejoin="round"
+       />
+       <circle
+         cx="32"
+         cy="20"
+         r="9"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="4"
+       />
+       <circle
+         cx="32"
+         cy="20"
+         r="4"
+         fill="#ffffff"
+       />
+     </svg>
+   </div>
+
+ </div>
   </div>
 
 <div style="text-align:center; margin-top:18px; font-size:24px; color:#ffffff;">
@@ -374,13 +383,21 @@ button{
 </div>
 
 <script>
-function toggleStudentNumber(){
-  const input = document.querySelector('#startScreen input');
+const studentNumberInput = document.querySelector('#studentNumberInput');
+const studentNumberMask = document.querySelector('#studentNumberMask');
 
-  if(input.type === "password"){
-    input.type = "text";
+studentNumberInput.addEventListener('input', function(){
+  this.value = this.value.replace(/\D/g, '').slice(0, 4);
+  studentNumberMask.textContent = '*'.repeat(this.value.length);
+});
+
+function toggleStudentNumber(){
+  if(studentNumberMask.style.display === "none"){
+    studentNumberMask.style.display = "flex";
+    studentNumberInput.style.color = "transparent";
   }else{
-    input.type = "password";
+    studentNumberMask.style.display = "none";
+    studentNumberInput.style.color = "#ffffff";
   }
 }
 </script>
