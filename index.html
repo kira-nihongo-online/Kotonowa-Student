@@ -269,7 +269,9 @@ button{
 </div>
 
 <button
-  style="
+id="translationOnlyBtn"
+    style="
+
     position:absolute;
     top:500%;
     left:50%;
@@ -399,6 +401,11 @@ function toggleStudentNumber(){
     studentNumberInput.style.color = "#ffffff";
   }
 }
+
+document.querySelector('#translationOnlyBtn').addEventListener('click', function(){
+  document.querySelector('#startScreen').style.display = 'none';
+});
+
 </script>
 
 <script src="panel.js"></script>
