@@ -14,22 +14,38 @@ async function translateText() {
   const resultDiv = document.getElementById("translateResult");
 
   if (!text) {
-   resultDiv.innerHTML = "";
-   return;
+    resultDiv.innerHTML = "";
+    return;
   }
 
   const url =
-   "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + currentLanguage + "&dt=t&q=" +
+    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + currentLanguage + "&dt=t&q=" +
     encodeURIComponent(text);
 
-  const res = await fetch(url);
-  const data = await res.json();
-  const translated = data[0].map(t => t[0]).join("");
+  try {
 
-  // サイドパネル表示
-  resultDiv.innerHTML = `<span class="translated">${translated}</span>`;
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("翻訳通信エラー");
+    }
+
+    const data = await res.json();
+    const translated = data[0].map(t => t[0]).join("");
+
+    // サイドパネル表示
+    resultDiv.innerHTML = `<span class="translated">${translated}</span>`;
+
+  } catch (error) {
+
+    resultDiv.innerHTML =
+      `<span class="translated">⚠️ 翻訳エラー</span>`;
+
+    console.error("Translation error:", error);
 
   }
+
+}
 
 // ========================================
 // 初期設定
