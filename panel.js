@@ -229,6 +229,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+document.getElementById("verifyTranslationBtn").addEventListener("click", async function () {
+
+  const translatedText =
+    document.getElementById("translateResult").innerText.trim();
+
+  if (!translatedText) return;
+
+  let sourceLanguage = "ja";
+
+  if (document.getElementById("inputThBtn").classList.contains("active")) {
+    sourceLanguage = "th";
+  }
+
+  if (document.getElementById("inputEnBtn").classList.contains("active")) {
+    sourceLanguage = "en";
+  }
+
+  const url =
+    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
+    currentLanguage +
+    "&tl=" +
+    sourceLanguage +
+    "&dt=t&q=" +
+    encodeURIComponent(translatedText);
+
+  try {
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("確認翻訳通信エラー");
+    }
+
+    const data = await res.json();
+    const verifiedText = data[0].map(t => t[0]).join("");
+
+    resultDiv.innerHTML +=
+      `<div style="margin-top:30px;">
+        <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+        <div class="translated">${verifiedText}</div>
+      </div>`;
+
+  } catch (error) {
+
+    resultDiv.innerHTML +=
+      `<div style="margin-top:30px;">
+        <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+        <div class="translated">⚠️ 翻訳エラー</div>
+      </div>`;
+
+    console.error("Verify translation error:", error);
+
+  }
+
+});
+
   document.getElementById("clearBtn").addEventListener("click", function () {
 
     textarea.value = "";
