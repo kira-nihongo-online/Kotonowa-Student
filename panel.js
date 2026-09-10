@@ -231,8 +231,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.getElementById("verifyTranslationBtn").addEventListener("click", async function () {
 
-  const translatedText =
-    document.getElementById("translateResult").innerText.trim();
+  const originalResult =
+    document.querySelector("#translateResult > .translated");
+
+  if (!originalResult) return;
+
+  const translatedText = originalResult.innerText.trim();
 
   if (!translatedText) return;
 
@@ -265,26 +269,27 @@ document.getElementById("verifyTranslationBtn").addEventListener("click", async 
     const data = await res.json();
     const verifiedText = data[0].map(t => t[0]).join("");
 
-    resultDiv.innerHTML +=
-      `<div style="margin-top:30px;">
-        <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-        <div class="translated">${verifiedText}</div>
-      </div>`;
+    resultDiv.innerHTML =
+      `<span class="translated">${translatedText}</span>
+       <div style="margin-top:30px;">
+         <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+         <div class="translated">${verifiedText}</div>
+       </div>`;
 
   } catch (error) {
 
-    resultDiv.innerHTML +=
-      `<div style="margin-top:30px;">
-        <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-        <div class="translated">⚠️ 翻訳エラー</div>
-      </div>`;
+    resultDiv.innerHTML =
+      `<span class="translated">${translatedText}</span>
+       <div style="margin-top:30px;">
+         <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+         <div class="translated">⚠️ 翻訳エラー</div>
+       </div>`;
 
     console.error("Verify translation error:", error);
 
   }
 
 });
-
   document.getElementById("clearBtn").addEventListener("click", function () {
 
     textarea.value = "";
