@@ -362,9 +362,28 @@ id="translationOnlyBtn"
 
 <div class="inputArea">
 
-<textarea id="jpInput" placeholder="入力してください"></textarea>
+  <div class="result" id="translateResult"></div>
 
-<span class="copyBtn" id="copyInputBtn">📋</span>
+  <button
+    style="
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      width:auto;
+      margin:0;
+      padding:6px 14px;
+      font-size:20px;
+      font-weight:bold;
+      border:1px solid #ccc;
+      border-radius:8px;
+      background:#f5f5f5;
+      cursor:pointer;
+    "
+  >
+    🔄 Verify Translation
+  </button>
+
+  <span class="copyBtn" id="copyResultBtn">📋</span>
 
 </div>
 
