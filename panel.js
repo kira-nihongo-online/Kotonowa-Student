@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       translateText();
 
-    }, 1000);
+    }, 500);
 
   });
 
