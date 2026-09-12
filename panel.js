@@ -269,22 +269,19 @@ document.getElementById("verifyTranslationBtn").addEventListener("click", async 
     const data = await res.json();
     const verifiedText = data[0].map(t => t[0]).join("");
 
-    resultDiv.innerHTML =
-      `<span class="translated">${translatedText}</span>
-       <div style="margin-top:30px;">
-         <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-         <div class="translated">${verifiedText}</div>
-       </div>`;
+    const verifyResultDiv = document.getElementById("verifyResult");
+
+    verifyResultDiv.innerHTML =
+          `<div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+           <div class="translated">${verifiedText}</div>`;
 
   } catch (error) {
 
-    resultDiv.innerHTML =
-      `<span class="translated">${translatedText}</span>
-       <div style="margin-top:30px;">
-         <div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-         <div class="translated">⚠️ 翻訳エラー</div>
-       </div>`;
+    const verifyResultDiv = document.getElementById("verifyResult");
 
+    verifyResultDiv.innerHTML =
+          `<div style="font-size:28px; font-weight:bold;">Verify Translation</div>
+           <div class="translated">⚠️ 翻訳エラー</div>`;
     console.error("Verify translation error:", error);
 
   }
