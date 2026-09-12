@@ -145,6 +145,21 @@ button{
   background-repeat:no-repeat;
   z-index:9999;
 }
+  
+@media (hover: hover) and (pointer: fine){
+  #startScreen{
+    transform:scale(0.4);
+    transform-origin:top left;
+    width:250%;
+    height:250%;
+  }
+}
+
+@media (hover: hover) and (pointer: fine){
+  #teacherApp{
+    zoom:0.5;
+  }
+}  
 
 </style>
 
@@ -325,6 +340,8 @@ id="translationOnlyBtn"
 
 </div>
 
+<div id="teacherApp">  
+
 <!-- ===== 授業翻訳 ===== -->
 
 <!-- ===== ロゴ ===== -->
@@ -407,6 +424,8 @@ id="translationOnlyBtn"
 
 <div class="result" id="verifyResult"></div>
 
+</div>
+  
 <script>
 const studentNumberInput = document.querySelector('#studentNumberInput');
 const studentNumberMask = document.querySelector('#studentNumberMask');
