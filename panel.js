@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("studentNumberInput").value.trim();
 
     const message =
-      document.getElementById("jpInput").value.trim();
+      document.getElementById("translateResult").innerText.trim();
 
     if (!message) {
       alert("送信する内容を入力してください");
