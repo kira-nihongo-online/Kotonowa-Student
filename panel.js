@@ -196,27 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Message sent:", message);
 
-      });  
-
-      .from("messages")
-      .insert({
-        sender_type: "student",
-        student_number: studentNumber,
-        message: message,
-        receiver_type: "teacher"
       });
 
-    if (error) {
-      console.error("Message send error:", error);
-      alert("送信エラー");
-      return;
-    }
-
-    console.log("Message sent:", message);
-
-  });
-
-  document.getElementById("micBtn").addEventListener("click", function () {
+    document.getElementById("micBtn").addEventListener("click", function () {
 
     if (recognition) {
       recognition.start();
