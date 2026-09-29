@@ -165,19 +165,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       };
 
-  // ===== Send =====
-  document.getElementById("sendBtn").addEventListener("click", async function () {
+  const message =
+    document.getElementById("translateResult").innerText.trim();
 
-    const studentNumber =
-      document.getElementById("studentNumberInput").value.trim();
-
-    const message =
-      document.getElementById("jpInput").value.trim();
-
-    if (!message) {
-      alert("送信する内容を入力してください");
-      return;
-    }
+  if (!message) {
+    alert("先に翻訳してください");
+    return;
+  }
 
     const { error } = await supabaseClient
       .from("messages")
