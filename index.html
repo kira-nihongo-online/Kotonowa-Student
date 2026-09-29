@@ -1,465 +1,498 @@
-//========================================
-// Class Weapon
-// panel.js (字幕表示対応版)
-// ========================================
+<!DOCTYPE html>
+<html>
 
-// ========================================
-// 授業翻訳
-// ========================================
-let currentLanguage = "th";
+<head>
+<meta charset="UTF-8">
+<title>Kotonowa Student</title>
 
-async function translateText() {
+<style>
 
-  const text = document.getElementById("jpInput").value;
-  const resultDiv = document.getElementById("translateResult");
+html,body{
+  height:100%;
+  margin:0;
+}
 
-  if (!text) {
-    resultDiv.innerHTML = "";
+body{
+  font-family:sans-serif;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  box-sizing:border-box;
+}
+
+h2{
+  margin-top:15px;
+  font-size:16px;
+  border-bottom:1px solid #ccc;
+  padding-bottom:4px;
+}
+
+textarea{
+  width:100%;
+  height:36vh;
+  margin-top:10px;
+  padding:14px;
+  box-sizing:border-box;
+  resize:none;
+  font-size:100px;
+  line-height:1.5;
+}
+
+button{
+  margin-top:5px;
+  padding:6px;
+  width:100%;
+  cursor:pointer;
+}
+
+.langButtons{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.langButtons button,
+.buttons button{
+  flex:1;
+  height:50px;
+  font-size:28px;
+  font-weight:bold;
+  background:#f5f5f5;
+  border:1px solid #ccc;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.langButtons button.active{
+  background:#d32f2f;
+  color:white;
+  border-color:#d32f2f;
+}
+
+.buttons{
+  display:flex;
+  gap:8px;
+  margin-top:18px;
+  margin-bottom:12px;
+}
+
+.result{
+  background:#f5f5f5;
+  border:1px solid #ccc;
+  margin-top:0;
+  padding:14px;
+  min-height:30vh;
+  font-size:100px;
+  line-height:1.5;
+}
+
+/* ========================== */
+/* タイ語だけ見やすく調整 */
+.translated{
+  font-size:1em;
+  font-weight:normal;
+  line-height:1.5;
+}
+
+.section{
+  margin-bottom:20px;
+}
+
+.wordRow{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #ddd;
+  padding:3px 0;
+  cursor:pointer;
+}
+
+#micBtn.listening{
+  background:#d32f2f;
+  color:#fff;
+  border-color:#d32f2f;
+}
+
+.inputArea{
+    position:relative;
+}
+
+.copyBtn{
+    position:absolute;
+    right:12px;
+    bottom:12px;
+    font-size:40px;
+    cursor:pointer;
+}
+
+.sendBtn{
+    width:50px;
+    height:50px;
+    cursor:pointer;
+}
+
+.sectionLabel{
+    font-size:28px;
+    line-height:1.2;
+}
+
+#startScreen{
+  position:fixed;
+  inset:0;
+  background-image:url("student-background.png");
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  z-index:9999;
+}
+
+@media (hover: hover) and (pointer: fine){
+  #startScreen{
+    transform:scale(0.4);
+    transform-origin:top left;
+    width:250%;
+    height:250%;
+  }
+}
+
+@media (hover: hover) and (pointer: fine){
+  #teacherApp{
+    zoom:0.5;
+  }
+}  
+
+</style>
+
+</head>
+
+<body>
+
+<div id="startScreen">
+  <img src="トータルロゴ2.png" alt="Kotonowa" style="width:180px; position:absolute; top:15%; left:50%; transform:translate(-50%,-50%);">
+
+<div style="position:absolute; top:23%; left:50%; transform:translateX(-50%); text-align:center; font-weight:bold; white-space:nowrap;">
+  <div style="font-size:80px; color:#ffffff;">Kotonowa</div>
+  <div style="font-size:60px; color:#00bfff;">Student</div>
+</div>
+
+<div style="position:absolute; top:35%; left:50%; transform:translateX(-50%); text-align:center; font-size:24px; color:#ffffff; white-space:nowrap;">
+  Connect ・ Communicate ・ Learn
+</div>
+
+<div style="position:absolute; top:40%; left:17.5%; text-align:left; white-space:nowrap;">
+  <div style="font-size:32px; font-weight:bold; color:#ffffff;">Student Number</div>
+</div>
+
+<div style="position:absolute; top:43%; left:50%; transform:translateX(-50%); width:85%; max-width:700px; height:120px;">
+
+ <div style="position:relative; width:100%; height:100%;">
+
+   <input
+     id="studentNumberInput"
+     type="text"
+     inputmode="numeric"
+     maxlength="4"
+     style="width:100%; height:100%; box-sizing:border-box; text-align:center; font-size:72px; letter-spacing:50px; border:3px solid #2196f3; border-radius:18px; padding-right:70px; background:rgba(255,255,255,0.08); color:transparent;"
+   >
+
+   <div
+     id="studentNumberMask"
+     style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding-right:70px; padding-top:20px; box-sizing:border-box; font-size:72px; letter-spacing:20px; color:#ffffff; pointer-events:none;"
+   ></div>
+
+   <div onclick="toggleStudentNumber()" style="position:absolute; right:22px; top:50%; transform:translateY(-50%); width:64px; height:44px; cursor:pointer;">
+     <svg viewBox="0 0 64 40" width="64" height="44">
+       <path
+         d="M4 20
+            C12 7, 22 2, 32 2
+            C42 2, 52 7, 60 20
+            C52 33, 42 38, 32 38
+            C22 38, 12 33, 4 20 Z"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="4"
+         stroke-linejoin="round"
+       />
+       <circle
+         cx="32"
+         cy="20"
+         r="9"
+         fill="none"
+         stroke="#ffffff"
+         stroke-width="4"
+       />
+       <circle
+         cx="32"
+         cy="20"
+         r="4"
+         fill="#ffffff"
+       />
+     </svg>
+   </div>
+
+ </div>
+
+<div style="text-align:center; margin-top:18px; font-size:24px; color:#ffffff;">
+            Enter your 4-digit number
+          </div>
+
+<button
+  id="connectBtn"
+  style="
+    position:absolute;
+    top:200%;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:700px;
+    height:120px;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-size:48px;
+    font-weight:bold;
+    border:3px solid #2196f3;
+    border-radius:18px;
+    background:linear-gradient(90deg,#1976d2,#2196f3);
+    color:#ffffff;
+    cursor:pointer;
+  "
+  >
+
+   🔗 Connect
+
+</button>
+
+<div
+  style="
+    position:absolute;
+    top:400%;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:700px;
+    display:flex;
+    align-items:center;
+    gap:32px;
+    color:#ffffff;
+    font-size:28px;
+    text-align:center;
+  "
+>
+  <div style="flex:1; height:2px; background:#ffffff;"></div>
+
+  <span>or</span>
+
+  <div style="flex:1; height:2px; background:#ffffff;"></div>
+</div>
+
+<button
+id="translationOnlyBtn"
+    style="
+
+    position:absolute;
+    top:500%;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:700px;
+    height:120px;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-size:48px;
+    font-weight:bold;
+    border:3px solid #2196f3;
+    border-radius:18px;
+    background:rgba(30,70,120,0.65);
+    color:#ffffff;
+    cursor:pointer;
+  "
+>
+  🌐 Translation Only
+</button>
+
+<div
+  style="
+    position:absolute;
+    top:700%;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+    font-size:24px;
+    color:#ffffff;
+    white-space:nowrap;
+  "
+>
+  Words Make a New World
+</div>
+
+<div
+  style="
+    position:absolute;
+    top:900px;
+    left:50%;
+    transform:translateX(-50%);
+    width:90px;
+    height:2px;
+    background:#ffffff;
+  "
+></div>
+
+</div>
+
+</div>
+
+<div id="teacherApp">  
+
+<!-- ===== 授業翻訳 ===== -->
+
+<!-- ===== ロゴ ===== -->
+<div style="display:flex; align-items:center; gap:12px; margin:35px 0 25px 0; position:relative;">
+  <img src="トータルロゴ.png" alt="Kotonowa" style="width:48px; height:48px;">
+  <h1 style="margin:0; font-size:40px; font-weight:bold;">Kotonowa Student</h1>
+
+  <div
+    id="sendBtn"
+    class="sendBtn"
+    style="position:absolute; right:100px; top:0; display:flex; align-items:center; gap:6px; font-size:28px; font-weight:bold;">
+    <img src="icons8-送信-50.png" alt="Send"
+         style="width:50px; height:50px;">
+    <span>Send</span>
+  </div>
+
+</div>
+
+<div class="topArea">
+</div>
+
+<div class="sectionLabel">🎤 Input</div>
+
+<div class="langButtons">
+  <button id="inputJpBtn">🇯🇵</button>
+  <button id="inputThBtn">🇹🇭</button>
+  <button id="inputEnBtn">🇺🇸</button>
+</div>
+
+<div class="sectionLabel">🌐 Translate</div>
+
+<div class="langButtons">
+  <button id="jpBtn">🇯🇵</button>
+  <button id="thBtn" class="active">🇹🇭</button>
+  <button id="enBtn">🇺🇸</button>
+</div>
+
+<div class="inputArea">
+
+<textarea id="jpInput" placeholder="入力してください"></textarea>
+
+<span class="copyBtn" id="copyInputBtn">📋</span>
+
+</div>
+
+<div class="buttons">
+  <button id="micBtn">🎤</button>
+  <button id="translateBtn">🌐</button>
+  <button id="clearBtn">🗑️</button>
+  <button id="speakBtn">🔊</button>
+</div>
+
+<div class="inputArea">
+
+  <div class="result" id="translateResult"></div>
+
+  <span class="copyBtn" id="copyResultBtn">📋</span>
+
+</div>
+
+<div style="margin-top:20px;">
+
+  <button
+    id="verifyTranslationBtn"
+    style="
+      width:400px;
+      height:50px;
+      margin:0;
+      padding:0;
+      font-size:28px;
+      font-weight:bold;
+      border:1px solid #ccc;
+      border-radius:8px;
+      background:#f5f5f5;
+      cursor:pointer;
+    "
+  >
+    🔄 Verify Translation
+  </button>
+
+</div>
+
+<div class="result" id="verifyResult"></div>
+
+</div>
+
+<script>
+const studentNumberInput = document.querySelector('#studentNumberInput');
+const studentNumberMask = document.querySelector('#studentNumberMask');
+
+studentNumberInput.addEventListener('input', function(){
+  this.value = this.value.replace(/\D/g, '').slice(0, 4);
+  studentNumberMask.textContent = '*'.repeat(this.value.length);
+});
+
+function toggleStudentNumber(){
+  if(studentNumberMask.style.display === "none"){
+    studentNumberMask.style.display = "flex";
+    studentNumberInput.style.color = "transparent";
+  }else{
+    studentNumberMask.style.display = "none";
+    studentNumberInput.style.color = "#ffffff";
+  }
+}
+
+document.querySelector('#translationOnlyBtn').addEventListener('click', function(){
+  document.querySelector('#startScreen').style.display = 'none';
+});
+
+document.querySelector('#connectBtn').addEventListener('click', async function(){
+
+  const studentNumber =
+    document.querySelector('#studentNumberInput').value.trim();
+
+  if (studentNumber.length !== 4) {
+    alert('4桁のStudent Numberを入力してください');
     return;
   }
 
-  const url =
-    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" + currentLanguage + "&dt=t&q=" +
-    encodeURIComponent(text);
+  const { data, error } = await supabaseClient
+    .from('students')
+    .select('student_number, status')
+    .eq('student_number', studentNumber)
+    .eq('status', 'active')
+    .maybeSingle();
 
-  try {
-
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error("翻訳通信エラー");
-    }
-
-    const data = await res.json();
-    const translated = data[0].map(t => t[0]).join("");
-
-    // サイドパネル表示
-    resultDiv.innerHTML = `<span class="translated">${translated}</span>`;
-
-  } catch (error) {
-
-    resultDiv.innerHTML =
-      `<span class="translated">⚠️ 翻訳エラー</span>`;
-
-    console.error("Translation error:", error);
-
+  if (error) {
+    console.error('Student connection error:', error);
+    alert('接続エラー');
+    return;
   }
 
-}
-
-// ========================================
-// 初期設定
-// ========================================
-document.addEventListener("DOMContentLoaded", function () { 
-
-  Voice.init();
-
-
-  const jpBtn = document.getElementById("jpBtn");
-  const thBtn = document.getElementById("thBtn");
-  const enBtn = document.getElementById("enBtn");
-
-  const inputJpBtn = document.getElementById("inputJpBtn");
-  const inputThBtn = document.getElementById("inputThBtn");
-  const inputEnBtn = document.getElementById("inputEnBtn");
-
-  function setLanguage(lang){
-
-      currentLanguage = lang;
-
-      jpBtn.classList.remove("active");
-      thBtn.classList.remove("active");
-      enBtn.classList.remove("active");
-
-      if(lang === "ja"){
-          jpBtn.classList.add("active");
-      }
-
-      if(lang === "th"){
-          thBtn.classList.add("active");
-      }
-
-      if(lang === "en"){
-          enBtn.classList.add("active");
-      }
-
+  if (!data) {
+    alert('このStudent Numberは登録されていません');
+    return;
   }
 
-  function setInputLanguage(lang){
+  document.querySelector('#startScreen').style.display = 'none';
 
-      inputJpBtn.classList.remove("active");
-      inputThBtn.classList.remove("active");
-      inputEnBtn.classList.remove("active");
-
-      if(lang === "ja"){
-          inputJpBtn.classList.add("active");
-          if(recognition) recognition.lang = "ja-JP";
-      }
-
-      if(lang === "th"){
-          inputThBtn.classList.add("active");
-          if(recognition) recognition.lang = "th-TH";
-      }
-
-      if(lang === "en"){
-          inputEnBtn.classList.add("active");
-          if(recognition) recognition.lang = "en-US";
-      }
-
-  }
-
-  const textarea = document.getElementById("jpInput");
-  const resultDiv = document.getElementById("translateResult");
-
-  const copyBtn = document.getElementById("copyInputBtn");
-
-  copyBtn.onclick = async function () {
-
-      const text = document.getElementById("jpInput").value;
-
-      if (!text) return;
-
-      try {
-          await navigator.clipboard.writeText(text);
-
-          copyBtn.textContent = "✅";
-
-          setTimeout(function () {
-              copyBtn.textContent = "📋";
-          }, 1000);
-
-      } catch (e) {
-          alert("コピー失敗");
-          console.error(e);
-      }
-
-  };
-
-      const copyResultBtn = document.getElementById("copyResultBtn");
-
-      copyResultBtn.onclick = async function () {
-
-          const text = document
-              .getElementById("translateResult")
-              .innerText
-              .trim();
-
-          if (!text) return;
-
-          try {
-
-              await navigator.clipboard.writeText(text);
-
-              copyResultBtn.textContent = "✅";
-
-              setTimeout(function () {
-                  copyResultBtn.textContent = "📋";
-              }, 1000);
-
-          } catch (e) {
-
-              alert("コピー失敗");
-              console.error(e);
-
-          }
-
-      };
-
-      // ===== Send =====
-      document.getElementById("sendBtn").addEventListener("click", async function () {
-
-        const studentNumber =
-          document.getElementById("studentNumberInput").value.trim();
-
-        const message =
-          document.getElementById("translateResult").innerText.trim();
-
-        if (!message) {
-          alert("先に翻訳してください");
-          return;
-        }
-
-        const { error } = await supabaseClient
-          .from("messages")
-          .insert({
-            sender_type: "student",
-            student_number: studentNumber,
-            message: message,
-            receiver_type: "teacher"
-          });
-
-        if (error) {
-          console.error("Message send error:", error);
-          alert("送信エラー");
-          return;
-        }
-
-        console.log("Message sent:", message);
-
-      });
-
-    document.getElementById("micBtn").addEventListener("click", function () {
-
-    if (recognition) {
-      recognition.start();
-    }
-
-  });
-
-  // ===== 入力欄変更時に結果をクリア =====
-  let inputTimer;
-
-  textarea.addEventListener("input", function () {
-
-    clearTimeout(inputTimer);
-
-    if (!this.value) {
-
-      resultDiv.innerHTML = "";
-      return;
-
-    }
-
-    inputTimer = setTimeout(function () {
-
-      translateText();
-
-    }, 500);
-
-  });
-
-  jpBtn.addEventListener("click", function () {
-    setLanguage("ja");
-  });
-
-  thBtn.addEventListener("click", function () {
-    setLanguage("th");
-  });
-
-  enBtn.addEventListener("click", function () {
-    setLanguage("en");
-  });
-
-  inputJpBtn.addEventListener("click", function () {
-    setInputLanguage("ja");
-  });
-
-  inputThBtn.addEventListener("click", function () {
-    setInputLanguage("th");
-  });
-
-  inputEnBtn.addEventListener("click", function () {
-    setInputLanguage("en");
-  });
-
-  setLanguage("th");
-  setInputLanguage("ja");
-
-  // ===== ボタンイベント =====
-  document.getElementById("translateBtn").addEventListener("click", function () {
-
-  translateText();
+  console.log('Kotonowa Student connected:', data.student_number);
 
 });
 
-document.getElementById("verifyTranslationBtn").addEventListener("click", async function () {
+</script>
 
-  const originalResult =
-    document.querySelector("#translateResult > .translated");
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="panel.js"></script>
 
-  if (!originalResult) return;
-
-  const translatedText = originalResult.innerText.trim();
-
-  if (!translatedText) return;
-
-  let sourceLanguage = "ja";
-
-  if (document.getElementById("inputThBtn").classList.contains("active")) {
-    sourceLanguage = "th";
-  }
-
-  if (document.getElementById("inputEnBtn").classList.contains("active")) {
-    sourceLanguage = "en";
-  }
-
-  const url =
-    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
-    currentLanguage +
-    "&tl=" +
-    sourceLanguage +
-    "&dt=t&q=" +
-    encodeURIComponent(translatedText);
-
-  try {
-
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error("確認翻訳通信エラー");
-    }
-
-    const data = await res.json();
-    const verifiedText = data[0].map(t => t[0]).join("");
-
-    const verifyResultDiv = document.getElementById("verifyResult");
-
-    verifyResultDiv.innerHTML =
-          `<div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-           <div class="translated">${verifiedText}</div>`;
-
-  } catch (error) {
-
-    const verifyResultDiv = document.getElementById("verifyResult");
-
-    verifyResultDiv.innerHTML =
-          `<div style="font-size:28px; font-weight:bold;">Verify Translation</div>
-           <div class="translated">⚠️ 翻訳エラー</div>`;
-    console.error("Verify translation error:", error);
-
-  }
-
-});
-  document.getElementById("clearBtn").addEventListener("click", function () {
-
-    textarea.value = "";
-    resultDiv.innerHTML = "";
-
-  });
-
-  document.getElementById("speakBtn").addEventListener("click", function () {
-
-    const text =
-      document.getElementById("translateResult").innerText.trim();
-
-    if (!text) return;
-
-    Voice.speak(text, currentLanguage);
-
-  });
-
-  // ===== Enterキーで実行 =====
-  textarea.addEventListener("keydown", function(e) { if (e.key === "Enter") { e.preventDefault(); translateText(); }});
-
-});
-
-// ========================================
-// Speech Recognition
-// ========================================
-const SpeechRecognition =
-  window.SpeechRecognition || window.webkitSpeechRecognition;
-
-let recognition = null;
-
-if (SpeechRecognition) {
-
-  recognition = new SpeechRecognition();
-
-  recognition.lang = "ja-JP";
-  recognition.interimResults = false;
-  recognition.continuous = false;
-
-  recognition.onresult = function (event) {
-
-    const text = event.results[0][0].transcript;
-
-    document.getElementById("jpInput").value = text;
-
-    translateText();
-
-  };
-
-  recognition.onstart = function () {    
-
-    const micBtn = document.getElementById("micBtn");
-
-    micBtn.textContent = "🎙️";
-    micBtn.classList.add("listening");
-
-  };
-
-  recognition.onend = function () {
-
-    const micBtn = document.getElementById("micBtn");
-
-    micBtn.textContent = "🎤";
-    micBtn.classList.remove("listening");
-
-  };
-
-}
-
-// ========================================
-// Voice Controller
-// ========================================
-const Voice = (function () {
-
-  let ready = false;
-  let voiceJP = null;
-  let voiceTH = null;
-  let voiceEN = null;
-
-  function init() {
-
-    const setVoices = () => {
-
-      const voices = speechSynthesis.getVoices();
-
-      voiceJP =
-        voices.find(v => v.name.includes("七海")) ||
-        voices.find(v => v.lang === "ja-JP");
-
-      voiceTH =
-        voices.find(v => v.name.includes("เปรมวดี")) ||
-        voices.find(v => v.lang === "th-TH");
-
-      voiceEN =
-        voices.find(v => v.name.includes("Jenny")) ||
-        voices.find(v => v.lang.startsWith("en"));
-
-      if (voiceJP || voiceTH || voiceEN) {
-        ready = true;
-
-      }
-
-    };
-
-    setVoices();
-    speechSynthesis.onvoiceschanged = setVoices;
-
-  }
-
-  function speak(text, lang) {
-
-    const voices = speechSynthesis.getVoices();
-
-    if (!text) return;
-
-    const uttr = new SpeechSynthesisUtterance(text);
-
-    if (lang === "ja") {
-      uttr.lang = "ja-JP";
-      if (voiceJP) uttr.voice = voiceJP;
-    }
-
-    if (lang === "th") {
-        uttr.lang = "th-TH";
-        if (voiceTH) uttr.voice = voiceTH;
-    }
-
-    if (lang === "en") {
-      uttr.lang = "en-US";
-      if (voiceEN) uttr.voice = voiceEN;
-    }
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(uttr);
-
-  }
-
-  return {
-    init,
-    speak
-  };
-
-})();
+</body>
+</html>
