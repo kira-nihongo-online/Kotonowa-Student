@@ -165,15 +165,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
       };
 
-  const message =
-    document.getElementById("translateResult").innerText.trim();
+      // ===== Send =====
+      document.getElementById("sendBtn").addEventListener("click", async function () {
 
-  if (!message) {
-    alert("先に翻訳してください");
-    return;
-  }
+        const studentNumber =
+          document.getElementById("studentNumberInput").value.trim();
 
-    const { error } = await supabaseClient
+        const message =
+          document.getElementById("translateResult").innerText.trim();
+
+        if (!message) {
+          alert("先に翻訳してください");
+          return;
+        }
+
+        const { error } = await supabaseClient
+          .from("messages")
+          .insert({
+            sender_type: "student",
+            student_number: studentNumber,
+            message: message,
+            receiver_type: "teacher"
+          });
+
+        if (error) {
+          console.error("Message send error:", error);
+          alert("送信エラー");
+          return;
+        }
+
+        console.log("Message sent:", message);
+
+      });  
+
       .from("messages")
       .insert({
         sender_type: "student",
