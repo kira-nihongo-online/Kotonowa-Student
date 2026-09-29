@@ -165,6 +165,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
       };
 
+  // ===== Send =====
+  document.getElementById("sendBtn").addEventListener("click", async function () {
+
+    const studentNumber =
+      document.getElementById("studentNumberInput").value.trim();
+
+    const message =
+      document.getElementById("jpInput").value.trim();
+
+    if (!message) {
+      alert("送信する内容を入力してください");
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("messages")
+      .insert({
+        sender_type: "student",
+        student_number: studentNumber,
+        message: message,
+        receiver_type: "teacher"
+      });
+
+    if (error) {
+      console.error("Message send error:", error);
+      alert("送信エラー");
+      return;
+    }
+
+    console.log("Message sent:", message);
+
+  });
+
   document.getElementById("micBtn").addEventListener("click", function () {
 
     if (recognition) {
