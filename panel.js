@@ -324,6 +324,7 @@ document.getElementById("verifyTranslationBtn").addEventListener("click", async 
 
     textarea.value = "";
     resultDiv.innerHTML = "";
+    document.getElementById("verifyResult").innerHTML = "";
 
   });
 
