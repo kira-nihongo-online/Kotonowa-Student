@@ -493,3 +493,10 @@ const Voice = (function () {
   };
 
 })();
+
+  // ===== BFCache復帰対策 =====
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) {
+      window.location.reload();
+    }
+  });
