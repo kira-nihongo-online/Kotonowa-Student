@@ -449,8 +449,27 @@ function toggleStudentNumber(){
   }
 }
 
-document.querySelector('#translationOnlyBtn').addEventListener('click', function(){
+document.querySelector('#translationOnlyBtn').addEventListener('click', async function(){
+
+  const { data, error } = await supabaseClient
+    .from('student_app_settings')
+    .select('enabled')
+    .eq('id', 1)
+    .single();
+
+  if (error) {
+    console.error('Student app status check error:', error);
+    alert('接続エラー');
+    return;
+  }
+
+  if (!data.enabled) {
+    alert('Kotonowa Studentは現在使用できません');
+    return;
+  }
+
   document.querySelector('#startScreen').style.display = 'none';
+
 });
 
 document.querySelector('#connectBtn').addEventListener('click', async function(){
@@ -460,6 +479,23 @@ document.querySelector('#connectBtn').addEventListener('click', async function()
 
   if (studentNumber.length !== 4) {
     alert('4桁のStudent Numberを入力してください');
+    return;
+  }
+
+  const { data: appData, error: appError } = await supabaseClient
+    .from('student_app_settings')
+    .select('enabled')
+    .eq('id', 1)
+    .single();
+
+  if (appError) {
+    console.error('Student app status check error:', appError);
+    alert('接続エラー');
+    return;
+  }
+
+  if (!appData.enabled) {
+    alert('Kotonowa Studentは現在使用できません');
     return;
   }
 
