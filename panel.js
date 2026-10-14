@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
        .insert({
          sender_type: "student",
          student_number: studentNumber,
-         message: message + "\n\nMessage from Student (Received)",
+         message: message,
          receiver_type: "teacher"
        });
 
