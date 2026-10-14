@@ -194,38 +194,68 @@ document.addEventListener("DOMContentLoaded", function () {
 
       };
 
-  // ===== Send =====
-  document.getElementById("sendBtn").addEventListener("click", async function () {
+ 
+ // ===== Send =====
+ document.getElementById("sendBtn").addEventListener("click", async function () {
 
-    const studentNumber =
-      document.getElementById("studentNumberInput").value.trim();
+   const sendBtn = this;
+   const sendStatus = document.getElementById("sendStatus");
 
-    const message =
-      document.getElementById("translateResult").innerText.trim();
+   // 送信中の連続クリックを防止
+   if (sendBtn.dataset.sending === "true") {
+     return;
+   }
 
-    if (!message) {
-      alert("送信する内容を入力してください");
-      return;
-    }
+   const studentNumber =
+     document.getElementById("studentNumberInput").value.trim();
 
-    const { error } = await supabaseClient
-      .from("messages")
-      .insert({
-        sender_type: "student",
-        student_number: studentNumber,
-        message: message,
-        receiver_type: "teacher"
-      });
+   const message =
+     document.getElementById("translateResult").innerText.trim();
 
-    if (error) {
-      console.error("Message send error:", error);
-      alert("送信エラー");
-      return;
-    }
+   if (!message) {
+     alert("送信する内容を入力してください");
+     return;
+   }
 
-    console.log("Message sent:", message);
+   // 送信開始
+   sendBtn.dataset.sending = "true";
+   sendStatus.textContent = "Sending...";
 
-  });
+   try {
+     const { error } = await supabaseClient
+       .from("messages")
+       .insert({
+         sender_type: "student",
+         student_number: studentNumber,
+         message: message,
+         receiver_type: "teacher"
+       });
+
+     // Supabaseからエラーが返った場合
+     if (error) {
+       console.error("Message send error:", error);
+       sendStatus.textContent = "NG";
+       alert("送信エラー");
+       return;
+     }
+
+     // 送信成功
+     console.log("Message sent:", message);
+     sendStatus.textContent = "OK";
+
+   } catch (error) {
+     // 通信などで例外が発生した場合
+     console.error("Message send error:", error);
+     sendStatus.textContent = "NG";
+     alert("送信エラー");
+
+   } finally {
+     // 成功・失敗にかかわらず送信中の状態を解除
+     sendBtn.dataset.sending = "false";
+   }
+
+ });
+
 
   document.getElementById("micBtn").addEventListener("click", function () {
 
