@@ -281,8 +281,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setInputLanguage("en");
   });
 
-  setLanguage("th");
-  setInputLanguage("ja");
+  setLanguage("ja");
+  setInputLanguage("th");
 
   // ===== ボタンイベント =====
   document.getElementById("translateBtn").addEventListener("click", function () {
