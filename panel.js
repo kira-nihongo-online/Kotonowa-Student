@@ -76,6 +76,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("Teacher message received:", payload.new);
 
+        const receivePopup = document.getElementById("receivePopup");
+        receivePopup.style.display = "flex";
+
+        if (window.receivePopupTimer) {
+          clearTimeout(window.receivePopupTimer);
+        }
+
+        window.receivePopupTimer = setTimeout(function () {
+          receivePopup.style.display = "none";
+        }, 2000);
+
         document.getElementById("jpInput").value = payload.new.message;
         translateText();
       }
