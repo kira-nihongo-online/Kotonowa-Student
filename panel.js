@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
 
 
- 
+
  // ===== Send =====
  document.getElementById("sendBtn").addEventListener("click", async function () {
 
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
        .insert({
          sender_type: "student",
          student_number: studentNumber,
-         message: message,
+         message: message + "\n\nMessage from Student (Received)",
          receiver_type: "teacher"
        });
 
