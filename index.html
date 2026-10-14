@@ -131,6 +131,30 @@ button{
     cursor:pointer;
 }
 
+
+#sendPopup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+#sendPopupBox {
+  min-width: 220px;
+  padding: 30px 45px;
+  border-radius: 18px;
+  background: #ffffff;
+  color: #222222;
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+
 .sectionLabel{
     font-size:28px;
     line-height:1.2;
@@ -431,7 +455,36 @@ id="translationOnlyBtn"
 
 </div>
 
+<div id="sendPopup">
+  <div id="sendPopupBox">Sending...</div>
+</div>
+
 <script>
+
+
+window.showSendPopup = function (status) {
+  const popup = document.getElementById("sendPopup");
+  const box = document.getElementById("sendPopupBox");
+
+  box.textContent = status;
+  box.style.color =
+    status === "OK" ? "#16803c" :
+    status === "NG" ? "#d32f2f" : "#222222";
+
+  popup.style.display = "flex";
+
+  if (window.sendPopupTimer) {
+    clearTimeout(window.sendPopupTimer);
+  }
+
+  if (status === "OK" || status === "NG") {
+    window.sendPopupTimer = setTimeout(function () {
+      popup.style.display = "none";
+    }, 1500);
+  }
+};
+
+
 const studentNumberInput = document.querySelector('#studentNumberInput');
 const studentNumberMask = document.querySelector('#studentNumberMask');
 
