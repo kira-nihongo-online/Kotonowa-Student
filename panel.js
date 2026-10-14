@@ -194,12 +194,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       };
 
+
  
  // ===== Send =====
  document.getElementById("sendBtn").addEventListener("click", async function () {
 
    const sendBtn = this;
-   const sendStatus = document.getElementById("sendStatus");
 
    // 送信中の連続クリックを防止
    if (sendBtn.dataset.sending === "true") {
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
    // 送信開始
    sendBtn.dataset.sending = "true";
-   sendStatus.textContent = "Sending...";
+   window.showSendPopup("Sending...");
 
    try {
      const { error } = await supabaseClient
@@ -231,26 +231,24 @@ document.addEventListener("DOMContentLoaded", function () {
          receiver_type: "teacher"
        });
 
-     // Supabaseからエラーが返った場合
      if (error) {
        console.error("Message send error:", error);
-       sendStatus.textContent = "NG";
+       window.showSendPopup("NG");
        alert("送信エラー");
        return;
      }
 
      // 送信成功
      console.log("Message sent:", message);
-     sendStatus.textContent = "OK";
+     window.showSendPopup("OK");
 
    } catch (error) {
-     // 通信などで例外が発生した場合
      console.error("Message send error:", error);
-     sendStatus.textContent = "NG";
+     window.showSendPopup("NG");
      alert("送信エラー");
 
    } finally {
-     // 成功・失敗にかかわらず送信中の状態を解除
+     // 送信中の状態を解除
      sendBtn.dataset.sending = "false";
    }
 
