@@ -79,6 +79,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const receivePopup = document.getElementById("receivePopup");
         receivePopup.style.display = "flex";
 
+        receivePopup.style.display = "flex";
+
+        console.log("受信ポップアップ確認:", {
+          display: getComputedStyle(receivePopup).display,
+          visibility: getComputedStyle(receivePopup).visibility,
+          text: receivePopup.innerText
+        });
+
         if (window.receivePopupTimer) {
           clearTimeout(window.receivePopupTimer);
         }
